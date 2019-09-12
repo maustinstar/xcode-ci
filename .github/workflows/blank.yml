@@ -4,8 +4,10 @@ on: [push]
 
 jobs:
   build:
-
+  
+    name: Build and Test ${{ matrix.scheme }} for ${{ matrix.device }}
     runs-on: macOS-latest
+    
     strategy:
       max-parallel: 4
       matrix:
@@ -14,8 +16,10 @@ jobs:
         device: [iPhone Xs, iPhone Xs Max]
     
     steps:
+    
     - uses: actions/checkout@v1
-    - name: ${{ format('Build {0} for {1}', matrix.scheme, matrix.device) }}
+    
+    - name: Build
       env:
         scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
@@ -26,7 +30,8 @@ jobs:
         # scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         # Begin Build
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
-    - name: ${{ format('Test {0} on {1}', matrix.scheme, matrix.device) }}
+        
+    - name: Test
       env:
         scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
