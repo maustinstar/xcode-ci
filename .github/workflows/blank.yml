@@ -20,7 +20,7 @@ jobs:
         name="iPhone Xs"
         
         # Begin Build
-        xcodebuild build-for-testing -scheme $scheme -destination "platform=$PLATFORM,name=$NAME"
+        xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
     - name: Test
       run: |
         # Finds all schemes ending with "Test"
@@ -32,5 +32,5 @@ jobs:
         name="iPhone Xs"
         
         # Begin Tests
-        for s in $scheme; do xcodebuild test-without-building -scheme $scheme -destination "platform=$PLATFORM,name=$NAME"; done;
+        for s in $scheme; do xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"; done;
         
