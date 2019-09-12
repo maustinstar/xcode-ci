@@ -12,7 +12,7 @@ jobs:
     - name: Build
       env:
         platform: iOS Simulator
-        devices: ${{ "iPhone Xs", "iPhone Xs Max" }}
+        devices: ${{ ' "iPhone Xs" "iPhone Xs Max" ' }}
       run: |
         # Change to your main scheme; currently finds first scheme
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
@@ -27,7 +27,7 @@ jobs:
     - name: Test
       env:
         platform: iOS Simulator
-        devices: ${{ "iPhone Xs", "iPhone Xs Max" }}
+        devices: ${{ ' "iPhone Xs" "iPhone Xs Max" ' }}
       run: |
         # Finds all schemes ending with "Test"
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
