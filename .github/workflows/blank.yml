@@ -21,10 +21,9 @@ jobs:
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         
         # Begin Build
-        echo ${devices[*]}
-        for name in ${devices[*]}; do
-          echo "Building for $name."
-          xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
+        for i in ${!devices[*]}; do
+          echo "Building for ${devices[i]}."
+          xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=${devices[i]}"
         done
         
     - name: Test
@@ -40,10 +39,10 @@ jobs:
         
         # Begin Tests
         echo ${devices[*]}
-        for name in ${devices[*]}; do
+        for i in ${!devices[*]}; do
           for scheme in $schemes; do
-            echo "Testing $scheme on $name."
-            xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"
+            echo "Testing $scheme on ${devices[i]}."
+            xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=${devices[i]}"
           done
         done
         
