@@ -12,16 +12,17 @@ jobs:
     - name: Build
       run: |
         # Change to your testing scheme; currently uses first scheme
-        scheme=$(xcodebuild -list -json | tr -d "\n" | ruby -e "require 'rubygems';require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+        scheme_list=$(xcodebuild -list -json | tr -d "\n")
+        scheme=$(scheme_list ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         # Device to build for
         platform="iOS Simulator"
         name="iPhone Xs"
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
-        # CODE_SIGN_ENTITY="" CODE_SIGNING_REQUIRED=NO
     - name: Test
       run: |
-        # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
-        scheme=$(xcodebuild -list -json | tr -d "\n" | ruby -e "require 'rubygems';require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][1]")
+        # Change to your testing scheme; this currently searches for the first scheme ending with "Test"
+        scheme_list=$(xcodebuild -list -json | tr -d "\n")
+        scheme=$(scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
         # Device for testing
         platform="iOS Simulator"
         name="iPhone Xs"
