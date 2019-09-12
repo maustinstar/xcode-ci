@@ -16,8 +16,8 @@ jobs:
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         
         # Device to build for
-        platform="iOS Simulator"
-        name="iPhone Xs"
+        export platform="iOS Simulator"
+        export name="iPhone Xs"
         
         # Begin Build
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
@@ -28,8 +28,8 @@ jobs:
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
         
         # Device for testing
-        platform="iOS Simulator"
-        name="iPhone Xs"
+        # platform="iOS Simulator"
+        # name="iPhone Xs"
         
         # Begin Tests
         for s in $scheme; do xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"; done;
