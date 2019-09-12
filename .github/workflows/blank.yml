@@ -31,7 +31,8 @@ jobs:
         
         # Begin Tests
         for scheme in $schemes
+        do
           echo "Testing $scheme."
-          do xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"
+          xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"
         done
         
