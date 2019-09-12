@@ -6,32 +6,32 @@ jobs:
   build:
 
     runs-on: macOS-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        platform: [iOS Simulator]
+        device: [iPhone Xs, iPhone Xs Max]
     
     steps:
     - uses: actions/checkout@v1
     - name: Build
       env:
-        platform: iOS Simulator
+        platform: ${{ matrix.platform }}
+        device: ${{ matrix.device }}
       run: |
-        # Devices
-        devices=("iPhone Xs" "iPhone Xs Max")
         
-        # Change to your main scheme; currently finds first scheme
+        # Scheme to build; currently finds first scheme.
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         
         # Begin Build
-        for i in ${!devices[*]}; do
-          echo "Building for ${devices[i]}."
-          xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=${devices[i]}"
-        done
+        xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
         
     - name: Test
       env:
-        platform: iOS Simulator
+        platform: ${{ matrix.platform }}
+        device: ${{ matrix.device }}
       run: |
-        # Devices
-        devices=("iPhone Xs" "iPhone Xs Max")
         
         # Finds all schemes ending with "Test"
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
@@ -39,10 +39,8 @@ jobs:
         
         # Begin Tests
         echo ${devices[*]}
-        for i in ${!devices[*]}; do
-          for scheme in $schemes; do
-            echo "Testing $scheme on ${devices[i]}."
-            xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=${devices[i]}"
-          done
+        for scheme in $schemes; do
+          echo "Testing $scheme on $device."
+          xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$device"
         done
         
