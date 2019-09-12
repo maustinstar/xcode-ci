@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build
-      run: xcodebuild
+      run: xcodebuild -allowProvisioningUpdates
     - name: Test
       run: |
         # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
