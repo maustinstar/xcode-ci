@@ -10,7 +10,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build
-      run: xcodebuild -allowProvisioningUpdates
+      run: |
+        # Change to your testing scheme; currently uses first scheme
+        scheme=$(xcodebuild -list -json | tr -d "\n" | ruby -e "require 'rubygems';require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+        xcodebuild -build-for-testing -scheme $scheme
     - name: Test
       run: |
         # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
