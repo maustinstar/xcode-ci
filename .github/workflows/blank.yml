@@ -12,28 +12,32 @@ jobs:
     - name: Build
       env:
         platform: iOS Simulator
-        name: iPhone Xs
+        devices: [iPhone Xs, iPhone Xs Max]
       run: |
         # Change to your main scheme; currently uses first scheme
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         
         # Begin Build
-        xcodebuild build-for-testing -scheme $scheme
-        # -destination "platform=$platform,name=$name"
+        for name in $devices do
+          echo "Building for $name."
+          xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
+        done
+        
     - name: Test
       env:
         platform: iOS Simulator
-        name: iPhone Xs
+        devices: [iPhone Xs, iPhone Xs Max]
       run: |
         # Finds all schemes ending with "Test"
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
         schemes=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
         
         # Begin Tests
-        for scheme in $schemes
-        do
-          echo "Testing $scheme."
-          xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"
+        for name in $devices do
+          for scheme in $schemes do
+            echo "Testing $scheme on $name."
+            xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$name"
+          done
         done
         
