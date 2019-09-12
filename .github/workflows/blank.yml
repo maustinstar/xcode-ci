@@ -10,18 +10,26 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build
+      env:
+        scheme_list: ${ xcodebuild -list -json | tr -d "\n" }
+        scheme: ${ echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]" }
+        platform: iOS Simulator
+        name: iPhone Xs
       run: |
         # Change to your testing scheme; currently uses first scheme
-        scheme_list=$(xcodebuild -list -json | tr -d "\n")
-        scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+        # scheme_list=$(xcodebuild -list -json | tr -d "\n")
+        # scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         
         # Device to build for
-        export platform="iOS Simulator"
-        export name="iPhone Xs"
+        # export platform="iOS Simulator"
+        # export name="iPhone Xs"
         
         # Begin Build
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
     - name: Test
+      env:
+        platform: iOS Simulator
+        name: iPhone Xs
       run: |
         # Searches for all schemes ending with "Test"
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
