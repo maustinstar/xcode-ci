@@ -9,6 +9,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
+        scheme: [blank]
         platform: [iOS Simulator]
         device: [iPhone Xs, iPhone Xs Max]
     
@@ -16,25 +17,24 @@ jobs:
     - uses: actions/checkout@v1
     - name: Build for ${{ matrix.device }}
       env:
+        scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
         device: ${{ matrix.device }}
       run: |
         # Scheme to build; currently finds first scheme.
-        scheme_list=$(xcodebuild -list -json | tr -d "\n")
-        scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
+        # scheme_list=$(xcodebuild -list -json | tr -d "\n")
+        # scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         # Begin Build
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
     - name: Test on ${{ matrix.device }}
       env:
+        scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
         device: ${{ matrix.device }}
       run: |
         # Finds all schemes ending with "Test"
-        scheme_list=$(xcodebuild -list -json | tr -d "\n")
-        schemes=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
+        # scheme_list=$(xcodebuild -list -json | tr -d "\n")
+        # schemes=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
         # Begin Tests
-        for scheme in $schemes; do
-          echo "Testing $scheme on $device."
-          xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$device"
-        done
+        xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$device"
         
