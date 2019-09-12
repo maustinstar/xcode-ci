@@ -12,10 +12,11 @@ jobs:
     - name: Build
       run: xcodebuild
     - name: Test
-    # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
-      run: export scheme=$(xcodebuild -list -json | tr -d "\n" | ruby -e "require 'rubygems';require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][1]")
-    # Device for testing
-      run: export platform="iOS Simulator"
-      run: export name="iPhone Xs"
-    # Begin Test
-      run: xcodebuild test -scheme $scheme -destination "platform=$platform,name=$name"
+      run: |
+        # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
+        scheme=$(xcodebuild -list -json | tr -d "\n" | ruby -e "require 'rubygems';require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][1]")
+        # Device for testing
+        platform="iOS Simulator"
+        name="iPhone Xs"
+        # Begin Test
+        xcodebuild test -scheme $scheme -destination "platform=$platform,name=$name"
