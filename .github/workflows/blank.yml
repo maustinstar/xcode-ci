@@ -5,13 +5,15 @@ on: [push]
 jobs:
   build:
   
-    name: Build and Test ${{ matrix.scheme }} for ${{ matrix.device }}
+    name: ${{ matrix.device }}: Build ${{ matrix.scheme }} 
     runs-on: macOS-latest
     
     strategy:
       max-parallel: 6
       matrix:
+        # List all schemes to build
         scheme: [blank, blankTests, blankUITests]
+        # Specify the platform & devices
         platform: [iOS Simulator]
         device: [iPhone Xs, iPhone Xs Max]
     
