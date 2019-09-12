@@ -19,27 +19,20 @@ jobs:
         platform: ${{ matrix.platform }}
         device: ${{ matrix.device }}
       run: |
-        
         # Scheme to build; currently finds first scheme.
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
         scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
-        
         # Begin Build
-        # xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
-        xcodebuild build-for-testing -allTargets -destination "platform=$platform,name=$device"
-        
+        xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
     - name: Test on ${{ matrix.device }}
       env:
         platform: ${{ matrix.platform }}
         device: ${{ matrix.device }}
       run: |
-        
         # Finds all schemes ending with "Test"
         scheme_list=$(xcodebuild -list -json | tr -d "\n")
         schemes=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'].select{ |i| i.end_with?('Tests') }[0]")
-        
         # Begin Tests
-        echo ${devices[*]}
         for scheme in $schemes; do
           echo "Testing $scheme on $device."
           xcodebuild test-without-building -scheme $scheme -destination "platform=$platform,name=$device"
