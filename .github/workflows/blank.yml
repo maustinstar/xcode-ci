@@ -16,7 +16,8 @@ jobs:
         # Device to build for
         platform="iOS Simulator"
         name="iPhone Xs"
-        xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name" CODE_SIGN_ENTITY="" CODE_SIGNING_REQUIRED=NO
+        xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$name"
+        # CODE_SIGN_ENTITY="" CODE_SIGNING_REQUIRED=NO
     - name: Test
       run: |
         # Change to your testing scheme; this currently searches for the first scheme name containing "Test"
