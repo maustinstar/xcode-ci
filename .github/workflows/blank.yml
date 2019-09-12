@@ -15,7 +15,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Build for ${{ matrix.device }}
+    - name: ${{ format('Build {0} for {1}', matrix.scheme, matrix.device) }}
       env:
         scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
@@ -26,7 +26,7 @@ jobs:
         # scheme=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
         # Begin Build
         xcodebuild build-for-testing -scheme $scheme -destination "platform=$platform,name=$device"
-    - name: Test on ${{ matrix.device }}
+    - name: ${{ format('Test {0} on {1}', matrix.scheme, matrix.device) }}
       env:
         scheme: ${{ matrix.scheme }}
         platform: ${{ matrix.platform }}
